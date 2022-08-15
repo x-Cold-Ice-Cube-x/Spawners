@@ -12,13 +12,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 public class SpawnersCMD implements CommandExecutor {
     Spawners instance;
 
-    public SpawnersCMD(Spawners instance){
+    public SpawnersCMD(Spawners instance) {
         this.instance = instance;
         instance.getCommand("spawners").setExecutor(this);
     }
@@ -28,15 +29,17 @@ public class SpawnersCMD implements CommandExecutor {
         if (args.length > 0) {
 
             // ---------reload----------
-            if (args[0].equalsIgnoreCase("reload")){
+            if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("spawners.spawners.reload")) {
                     // если есть право на команду релоад
                     instance.reloadConfig();
-                    sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.reload_command"));
+                    sender.sendMessage(Replacer.getMessageFromConfig(
+                            instance, "messages.reload_command"));
                 }
                 else {
                     // нет права на команду релоад
-                    sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.command_exception", command.getName() + " " + args[0]));
+                    sender.sendMessage(Replacer.getMessageFromConfig(
+                            instance, "messages.command_exception", command.getName() + " " + args[0]));
                 }
             }
 
@@ -44,10 +47,12 @@ public class SpawnersCMD implements CommandExecutor {
             else if (args[0].equalsIgnoreCase("help")) {
                 if (sender.hasPermission("spawners.spawners.help")) {
                     // отправить меню
-                    sender.sendMessage(Replacer.getListMessageFromConfig(instance, "messages.help_menu"));
+                    sender.sendMessage(Replacer.getListMessageFromConfig(
+                            instance, "messages.help_menu"));
                 }
                 else {
-                    sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.command_exception", command.getName() + " " + args[0]));
+                    sender.sendMessage(Replacer.getMessageFromConfig(
+                            instance, "messages.command_exception", command.getName() + " " + args[0]));
                 }
             }
 
@@ -55,40 +60,54 @@ public class SpawnersCMD implements CommandExecutor {
             else if (args[0].equalsIgnoreCase("give")) {
                 if (sender.hasPermission("spawners.spawners.give")) {
                     if (args.length > 3) {
-                        // System.out.println(sender.getServer().getPlayer(args[1]));
                         if (sender.getServer().getPlayer(args[1]) != null) {
                             // игрок настоящий
                             if (EntityType.fromName(args[2]) != null) {
                                 // настоящая сущность
                                 try {
+                                    // извлечение данных
                                     Integer number = Integer.parseInt(args[3]);
                                     String entity = args[2];
 
-                                    ItemStack spawner = generateItemStack(number, entity);
-                                    sender.getServer().getPlayer(sender.getName()).getInventory().addItem(spawner); // добавление спавнера в инвентарь
-                                    sender.sendMessage(Replacer.getMessageFromConfig_give(instance, "messages.give_command", (entity.substring(0,1).toUpperCase() + entity.substring(1).toLowerCase() + "_spawner"), sender.getName(), number.toString()));
-                                } catch (NumberFormatException exception) {
+                                    ItemStack spawner = new ItemStack(Material.SPAWNER, number); // Создание спавнера с определенной метой
+                                    setItemMeta(spawner, entity);
+                                    getInventory(sender).addItem(spawner); // добавление спавнера в инвентарь
+                                    sender.sendMessage(Replacer.getMessageFromConfig_give(instance,
+                                            "messages.give_command", getString(entity), sender.getName(), number.toString()));
+
+                                }
+                                catch (NumberFormatException exception) {
                                     // неправильный набор параметров в функции
-                                    sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.incorrect_parameters_exception"));
+                                    sender.sendMessage(Replacer.getMessageFromConfig(
+                                            instance, "messages.incorrect_parameters_exception"));
                                 }
 
-                            } else {
-                                sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.invalid_entity"));
+                            }
+                            else {
+                                // моб не найден
+                                sender.sendMessage(Replacer.getMessageFromConfig(
+                                        instance, "messages.invalid_entity"));
                             }
 
-                        } else {
+                        }
+                        else {
                             // игрок не найден
-                            sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.invalid_player"));
+                            sender.sendMessage(Replacer.getMessageFromConfig(
+                                    instance, "messages.invalid_player"));
                         }
 
 
-                    } else {
+                    }
+                    else {
                         // неправильный набор параметров в функции
-                        sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.incorrect_parameters_exception"));
+                        sender.sendMessage(Replacer.getMessageFromConfig(
+                                instance, "messages.incorrect_parameters_exception"));
                     }
 
-                } else {
-                    sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.command_exception", command.getName() + " " + args[0]));
+                }
+                else {
+                    sender.sendMessage(Replacer.getMessageFromConfig(
+                            instance, "messages.command_exception", command.getName() + " " + args[0]));
                 }
             }
 
@@ -98,28 +117,40 @@ public class SpawnersCMD implements CommandExecutor {
                     if (args.length > 1) {
                         if (EntityType.fromName(args[1]) != null) {
                             // настоящая сущность
-                            if (sender.getServer().getPlayer(sender.getName()).getInventory().getItemInMainHand().getType() == Material.SPAWNER) {
+                            if (getInventory(sender).getItemInMainHand().getType() == Material.SPAWNER) {
                                 // если в руке именно спавнер
-                                ItemStack spawner_in_hand = sender.getServer().getPlayer(sender.getName()).getInventory().getItemInMainHand();
+
+                                ItemStack spawner_in_hand = getInventory(sender).getItemInMainHand();
                                 String entity = args[1];
                                 ItemStack spawner = setItemMeta(spawner_in_hand, entity);
 
-                                sender.getServer().getPlayer(sender.getName()).getInventory().remove(spawner_in_hand); // удаление старого спавнера
-                                sender.getServer().getPlayer(sender.getName()).getInventory().addItem(spawner); // добавление нового
-                                sender.sendMessage(Replacer.getMessageFromConfig_set(instance, "messages.set_command", entity.substring(0,1).toUpperCase() + entity.substring(1).toLowerCase() + ChatColor.RESET));
-                            } else {
-                                // в руке не спавнер
-                                sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.invalid_itemstack"));
+                                getInventory(sender).remove(spawner_in_hand); // удаление старого спавнера
+                                getInventory(sender).addItem(spawner); // добавление нового
+                                sender.sendMessage(Replacer.getMessageFromConfig_set(instance,
+                                        "messages.set_command", getString(entity) + ChatColor.RESET));
                             }
-                        } else {
-                            sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.invalid_entity"));
+                            else {
+                                // в руке не спавнер
+                                sender.sendMessage(
+                                        Replacer.getMessageFromConfig(instance, "messages.invalid_itemstack"));
+                            }
                         }
-                    } else {
-                        // неправильный набор параметров в функции
-                        sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.incorrect_parameters_exception"));
+                        else {
+                            sender.sendMessage(
+                                    Replacer.getMessageFromConfig(instance, "messages.invalid_entity"));
+                        }
                     }
-                } else {
-                    sender.sendMessage(Replacer.getMessageFromConfig(instance, "messages.command_exception", command.getName() + " " + args[0]));
+                    else {
+                        // неправильный набор параметров в функции
+                        sender.sendMessage(
+                                Replacer.getMessageFromConfig(instance, "messages.incorrect_parameters_exception"));
+                    }
+                }
+                else {
+                    // нет права на команду
+                    sender.sendMessage(
+                            Replacer.getMessageFromConfig(instance, "messages.command_exception",
+                                    command.getName() + " " + args[0]));
                 }
 
             }
@@ -134,19 +165,21 @@ public class SpawnersCMD implements CommandExecutor {
         return true;
     }
 
-    public ItemStack generateItemStack(Integer number, String entity){
-        ItemStack spawner = new ItemStack(Material.SPAWNER, number); // Создание спавнера с определенной метой
-        return setItemMeta(spawner, entity);
-    }
-
-    public ItemStack setItemMeta(ItemStack spawner, String entity){
+    public ItemStack setItemMeta(ItemStack spawner, String entity) {
         spawner.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
         ItemMeta spawner_meta = spawner.getItemMeta();
-        spawner_meta.getPersistentDataContainer().set(new NamespacedKey(instance, "Entity"), PersistentDataType.STRING, entity.toUpperCase());
-        spawner_meta.setDisplayName(ChatColor.RESET + "Рассадник моба - " + ChatColor.AQUA + entity.substring(0,1).toUpperCase() + entity.substring(1).toLowerCase());
+        spawner_meta.getPersistentDataContainer().set(new NamespacedKey(instance, "Entity"),
+                PersistentDataType.STRING, entity.toUpperCase()); // добавление entity в контейнер
+        spawner_meta.setDisplayName(ChatColor.RESET + "Рассадник моба - " + ChatColor.AQUA + getString(entity)); // добавление displayname
         spawner_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS); // удаление описанния (т.е остается только эффект)
         spawner.setItemMeta(spawner_meta);
         return spawner;
+    }
+    public String getString(String entity){
+        return entity.substring(0, 1).toUpperCase() + entity.substring(1).toLowerCase();
+    }
+    public PlayerInventory getInventory(CommandSender sender) {
+        return  sender.getServer().getPlayer(sender.getName()).getInventory();
     }
 
 }

@@ -34,7 +34,9 @@ public class Events implements Listener {
     public void onBreakSpawner(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        if ((block.getType() == Material.SPAWNER) && (player.getInventory().getItemInMainHand().getEnchantments().containsKey(Enchantment.SILK_TOUCH))) {
+        if ((block.getType() == Material.SPAWNER) && (player.getInventory().getItemInMainHand().
+                getEnchantments().containsKey(Enchantment.SILK_TOUCH))) {
+
             if (player.hasPermission("spawners.break")) {
                 // Если сломанный блок - спавнер и если преедмет зачаровн на шелковое касание
                 CreatureSpawner state = (CreatureSpawner) block.getState(); // Получение объекта спавнера
@@ -46,14 +48,15 @@ public class Events implements Listener {
                 ItemStack spawner = new ItemStack(Material.SPAWNER, 1); // Создание спавнера с определенной метой
                 spawner.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1); // добавление зачарования
                 ItemMeta spawner_meta = spawner.getItemMeta();
-                spawner_meta.getPersistentDataContainer().set(new NamespacedKey(instance, "Entity"), PersistentDataType.STRING, entity.toString()); // добаление данных в контейнер
-                spawner_meta.setDisplayName(ChatColor.RESET + "Рассадник моба - " + ChatColor.AQUA + entity.toString().substring(0,1).toUpperCase() + entity.toString().substring(1).toLowerCase());
+                spawner_meta.getPersistentDataContainer().set(new NamespacedKey(instance, "Entity"),
+                        PersistentDataType.STRING, entity.toString()); // добаление данных в контейнер
+                spawner_meta.setDisplayName(
+                        ChatColor.RESET + "Рассадник моба - " + ChatColor.AQUA + getString(entity.toString()));
                 spawner_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS); // удаление описанния (т.е остается только эффект)
                 spawner.setItemMeta(spawner_meta);
                 block.getWorld().dropItemNaturally(block.getLocation(), spawner); // Выпадение айтема с определенными мета данными
             }
-            else{
-                // вывести сообщение из конфига
+            else {
                 event.setCancelled(false);
 
             }
@@ -70,7 +73,9 @@ public class Events implements Listener {
                 ItemStack spawner_itemstack = player.getInventory().getItemInMainHand(); // Получение айтемстака спавнера
                 ItemMeta spawner_meta = spawner_itemstack.getItemMeta(); // Получение меты спавнера
                 try {
-                    EntityType entity = EntityType.fromName(spawner_meta.getPersistentDataContainer().get(new NamespacedKey(instance, "Entity"), PersistentDataType.STRING));  // Получение EntityType entity
+                    EntityType entity = EntityType.fromName(
+                            spawner_meta.getPersistentDataContainer().get(new NamespacedKey(instance, "Entity"),
+                            PersistentDataType.STRING));  // Получение EntityType entity
                     CreatureSpawner spawner = (CreatureSpawner) block.getState(); // Получение объекта CreatureSpawner
                     spawner.setSpawnedType(entity); // Установка entity
                     spawner.update();
@@ -80,9 +85,13 @@ public class Events implements Listener {
             }
             else {
                 event.setCancelled(true);
-                player.sendMessage(Replacer.getMessageFromConfig(instance,"messages.place_spawner_exception"));
+                player.sendMessage(Replacer.getMessageFromConfig(
+                        instance,"messages.place_spawner_exception"));
             }
         }
+    }
+    public String getString(String entity){
+        return entity.substring(0, 1).toUpperCase() + entity.substring(1).toLowerCase();
     }
 }
 

@@ -1,12 +1,10 @@
 package cold_ice_cube.spawners.commands;
 
 import cold_ice_cube.spawners.Spawners;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +12,13 @@ import java.util.List;
 public class SpawnersTC implements TabCompleter {
 
     Spawners instance;
-    String[] mobs = new String[]{"axolotl", "bat", "bee", "blaze", "cat", "cave_spider", "chicken", "cod", "cow", "creeper", "dolphin", "donkey", "drowned", "elder_guardian", "enderman", "endermite", "evoker", "fox", "ghast", "guardian", "horse", "husk", "llama", "magma_cube", "mooshroom", "mule", "ocelot", "panda", "parrot", "phantom", "pig", "pillager", "polar_bear", "pufferfish", "rabbit", "ravager", "salmon", "sheep", "shulker", "silverfish", "skeleton", "skeleton_horse", "slime", "spider", "squid", "stray", "trader_llama", "tropical_fish", "turtle", "vex", "villager", "vindicator", "wandering_trader", "witch", "wither_skeleton", "wolf", "zombie", "zombie_horse", "zombie_pigman", "zombie_villager"};
+    String[] mobs = new String[]{"axolotl", "bat", "bee", "blaze", "cat", "cave_spider", "chicken", "cod", "cow",
+            "creeper", "dolphin", "donkey", "drowned", "elder_guardian", "enderman", "endermite", "evoker", "fox",
+            "ghast", "guardian", "horse", "husk", "llama", "magma_cube", "mooshroom", "mule", "ocelot", "panda",
+            "parrot", "phantom", "pig", "pillager", "polar_bear", "pufferfish", "rabbit", "ravager", "salmon",
+            "sheep", "shulker", "silverfish", "skeleton", "skeleton_horse", "slime", "spider", "squid", "stray",
+            "trader_llama", "tropical_fish", "turtle", "vex", "villager", "vindicator", "wandering_trader", "witch",
+            "wither_skeleton", "wolf", "zombie", "zombie_horse", "zombie_pigman", "zombie_villager"};
 
     public SpawnersTC(Spawners instance) {
         this.instance = instance;
@@ -27,8 +31,8 @@ public class SpawnersTC implements TabCompleter {
         String[] completers;
 
         if ((args.length == 1) && sender.hasPermission("spawners.spawners")) {
-            // /spawners reload, /spawners give, /spawners set
-            completers = new String[]{"reload", "give", "set", "reload"};
+            // /spawners reload, /spawners give, /spawners set, /spawners help
+            completers = new String[]{"reload", "give", "set", "help"};
             return Arrays.asList(completers);
 
         }
