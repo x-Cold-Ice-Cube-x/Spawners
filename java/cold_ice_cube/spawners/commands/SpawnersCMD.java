@@ -73,7 +73,8 @@ public class SpawnersCMD implements CommandExecutor {
                                     setItemMeta(spawner, entity);
                                     getInventory(sender).addItem(spawner); // добавление спавнера в инвентарь
                                     sender.sendMessage(Replacer.getMessageFromConfig_give(instance,
-                                            "messages.give_command", getString(entity), sender.getName(), number.toString()));
+                                            "messages.give_command", getString(entity) + "_spawner",
+                                            sender.getName(), number.toString()));
 
                                 }
                                 catch (NumberFormatException exception) {
