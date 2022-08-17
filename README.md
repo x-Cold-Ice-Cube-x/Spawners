@@ -22,7 +22,7 @@
 ### Я обязательно доведу это до ума... 
 ***(или ты...)***
 
-![Cute Cat](cute_cat.jpg)
+![Cute Cat](https://ic.pics.livejournal.com/kitianddima/15251656/55591/55591_1000.jpg)
 
 
 
