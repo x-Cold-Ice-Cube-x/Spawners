@@ -71,7 +71,7 @@ public class SpawnersCMD implements CommandExecutor {
 
                                     ItemStack spawner = new ItemStack(Material.SPAWNER, number); // Создание спавнера с определенной метой
                                     setItemMeta(spawner, entity);
-                                    getInventory(sender).addItem(spawner); // добавление спавнера в инвентарь
+                                    getInventory(args[1]).addItem(spawner); // добавление спавнера в инвентарь
                                     sender.sendMessage(Replacer.getMessageFromConfig_give(instance,
                                             "messages.give_command", getString(entity) + "_spawner",
                                             sender.getName(), number.toString()));
@@ -118,15 +118,15 @@ public class SpawnersCMD implements CommandExecutor {
                     if (args.length > 1) {
                         if (EntityType.fromName(args[1]) != null) {
                             // настоящая сущность
-                            if (getInventory(sender).getItemInMainHand().getType() == Material.SPAWNER) {
+                            if (getInventory(sender.getName()).getItemInMainHand().getType() == Material.SPAWNER) {
                                 // если в руке именно спавнер
 
-                                ItemStack spawner_in_hand = getInventory(sender).getItemInMainHand();
+                                ItemStack spawner_in_hand = getInventory(sender.getName()).getItemInMainHand();
                                 String entity = args[1];
                                 ItemStack spawner = setItemMeta(spawner_in_hand, entity);
 
-                                getInventory(sender).remove(spawner_in_hand); // удаление старого спавнера
-                                getInventory(sender).addItem(spawner); // добавление нового
+                                getInventory(sender.getName()).remove(spawner_in_hand); // удаление старого спавнера
+                                getInventory(sender.getName()).addItem(spawner); // добавление нового
                                 sender.sendMessage(Replacer.getMessageFromConfig_set(instance,
                                         "messages.set_command", getString(entity) + ChatColor.RESET));
                             }
@@ -179,8 +179,8 @@ public class SpawnersCMD implements CommandExecutor {
     public String getString(String entity){
         return entity.substring(0, 1).toUpperCase() + entity.substring(1).toLowerCase();
     }
-    public PlayerInventory getInventory(CommandSender sender) {
-        return  sender.getServer().getPlayer(sender.getName()).getInventory();
+    public PlayerInventory getInventory(String player_name) {
+        return  instance.getServer().getPlayer(player_name).getInventory();
     }
 
 }
