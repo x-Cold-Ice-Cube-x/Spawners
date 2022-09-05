@@ -1,0 +1,14 @@
+name: Spawners
+version: '${project.version}'
+main: x_cold_ice_cube_x.spawners.Spawners
+api-version: 1.16
+authors: [ x_Cold_Ice_Cube_x ]
+description: Плагин, добавляющий кастомные сервера на сервер Minecraft
+website: https://github.com/x-Cold-Ice-Cube-x/Spawners
+commands:
+  spawners:
+    description: "§6Общая команда плагина Spawners. (/spawners help)"
+  getCustomPickaxe:
+    permission: "spawners.pickaxe"
+    description: "§6Выдает игроку кирку плагина Spawners."
+

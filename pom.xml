@@ -4,19 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>Cold_Ice_Cube</groupId>
+    <groupId>x_Cold_Ice_Cube_x</groupId>
     <artifactId>Spawners</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Spawners</name>
 
-    <description>Плагин, добавляющий рассадникам мобов дополнительные функции.</description>
+    <description>Плагин, добавляющий кастомные сервера на сервер Minecraft</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <url>https://github.com/Cold-Ice-Cube</url>
+    <url>https://github.com/x-Cold-Ice-Cube-x/Spawners</url>
 
     <build>
         <plugins>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
