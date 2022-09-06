@@ -15,6 +15,7 @@ import x_cold_ice_cube_x.spawners.Spawners;
 import x_cold_ice_cube_x.spawners.Util.Reader;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class getCustomPickaxeCMD implements CommandExecutor {
 
@@ -25,16 +26,27 @@ public class getCustomPickaxeCMD implements CommandExecutor {
                 // игрок существует
                 if (Material.getMaterial(args[1]) != null) {
                     // если тип существует
-                    ItemStack pickaxe = new ItemStack(Material.getMaterial(args[1]), 1);
-                    pickaxe.addUnsafeEnchantment(Enchantment.SILK_TOUCH, 1);
+                    // numberFormatException
+                    // IllegalArgumentException
+                    try {
+                        ItemStack pickaxe = setEnchantments(new ItemStack(Material.getMaterial(args[1])), Reader.translateListToList("pickaxe.enchantments"));
 
-                    ItemMeta pickaxeItemMeta = pickaxe.getItemMeta();
-                    pickaxeItemMeta.setDisplayName(Reader.translateString("pickaxe.display_name"));
-                    pickaxeItemMeta.setLore(Reader.translateListToList("pickaxe.description"));
-                    pickaxeItemMeta.getPersistentDataContainer().set(new NamespacedKey(Spawners.getInstance(), "Verify"), PersistentDataType.STRING, "Verify");
-                    pickaxe.setItemMeta(pickaxeItemMeta);
+                        ItemMeta pickaxeItemMeta = pickaxe.getItemMeta();
+                        pickaxeItemMeta.setDisplayName(Reader.translateString("pickaxe.display_name"));
+                        pickaxeItemMeta.setLore(Reader.translateListToList("pickaxe.description"));
+                        pickaxeItemMeta.getPersistentDataContainer().set(new NamespacedKey(Spawners.getInstance(), "Verify"), PersistentDataType.STRING, "Verify");
+                        if (Reader.translateBoolean("pickaxe.hide_enchantments")) {
+                            pickaxeItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        }
+                        pickaxe.setItemMeta(pickaxeItemMeta);
 
-                    Bukkit.getServer().getPlayer(sender.getName()).getInventory().addItem(pickaxe);
+                        Bukkit.getServer().getPlayer(sender.getName()).getInventory().addItem(pickaxe);
+                    }
+                    catch (Exception exception) {
+                        // NumberFormatException - человек неправильно ввел уровень зачарования
+                        // IllegalArgumentException - человек неправильно ввел само зачарование
+                        sender.sendMessage(Reader.translateString("messages.invalid_pickaxe_data"));
+                    }
                 }
                 else {
                     sender.sendMessage(Reader.translateString("messages.invalid_itemStack"));
@@ -44,6 +56,19 @@ public class getCustomPickaxeCMD implements CommandExecutor {
                 sender.sendMessage(Reader.translateString("messages.invalid_player"));
             }
         }
+        else {
+            // неправильный набор параметров в функции
+            sender.sendMessage(Reader.translateString("messages.incorrect_parameters_exception"));
+        }
         return true;
+    }
+
+
+    public ItemStack setEnchantments(ItemStack item, List<String> enchantments) {
+        for (String enchantment: enchantments) {
+            String[] itemInfo = enchantment.split(";");
+            item.addUnsafeEnchantment(Enchantment.getByName(itemInfo[0].toUpperCase()), Integer.parseInt(itemInfo[1].replace(" ", "")));
+        }
+        return item;
     }
 }

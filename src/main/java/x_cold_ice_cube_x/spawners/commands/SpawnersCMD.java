@@ -156,6 +156,10 @@ public class SpawnersCMD implements CommandExecutor {
                 }
 
             }
+            else {
+                // неправильный набор параметров в функции
+                sender.sendMessage(Reader.translateString("messages.incorrect_parameters_exception"));
+            }
 
 
         }

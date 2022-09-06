@@ -36,5 +36,9 @@ public class Reader {
         return result;
     }
 
+    public static Boolean translateBoolean(String path) {
+        return Spawners.getInstance().getConfig().getBoolean(path);
+    }
+
 
 }

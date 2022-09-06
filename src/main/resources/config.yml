@@ -44,6 +44,10 @@ messages:
   # Плейсхолдеры: нет
   invalid_type: "&cТакого инструмента не существует!"
 
+  # Сообщение, которое будет приходить игроку, если он неправильно указал аргументы в pickaxe (config.yml)
+  # Плейсхолдеры: нет
+  invalid_pickaxe_data: "&cКакой-то из параметров pickaxe (config.yml) введён некорректно!"
+
   # Сообщение, которое будет приходить игроку, при вызове команду /spawners help
   # Плейсхолдеры: нет
   help_menu:
@@ -55,8 +59,12 @@ messages:
 
 
 pickaxe:
-  display_name: "&5Супер-кирка"
+  display_name: "&5Дропник"
+  enchantments:
+    - SILK_TOUCH; 1
+  hide_enchantments: true
   description:
+    - ""
     - "&6Даёт возможность получать в виде дропа"
     - "&6Любой &cрассадник мобов!"
 
